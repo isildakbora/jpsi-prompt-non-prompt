@@ -1,0 +1,1 @@
+g++ -o JpsiToMuMu JpsiToMuMu.cpp `pythia8-config --cxxflags --libs` `root-config --cflags --glibs`
