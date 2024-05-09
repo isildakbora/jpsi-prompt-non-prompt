@@ -38,7 +38,7 @@ pythia.readString("Onia:all  = on")
 #pythia.readString("521:onMode = off")  # no B+ decay
 
 
-pythia.readString("443:onMode = off")       # Turn off all J/Psi decays
+#pythia.readString("443:onMode = off")       # Turn off all J/Psi decays
 pythia.readString("443:onIfMatch = 13 -13") # // Enable J/Psi -> mu+ mu-
 
 pythia.init()
@@ -53,6 +53,14 @@ muon_py = ROOT.std.vector('float')()
 muon_pz = ROOT.std.vector('float')()
 muon_e = ROOT.std.vector('float')()
 is_prompt_jpsi = ROOT.std.vector('int')()
+
+jpsi_dx = ROOT.std.vector('float')()
+jpsi_dy = ROOT.std.vector('float')()
+jpsi_dz = ROOT.std.vector('float')()
+
+tree.Branch("jpsi_vx", jpsi_dx)
+tree.Branch("jpsi_vy", jpsi_dy)
+tree.Branch("jpsi_vz", jpsi_dz)
 
 tree.Branch("muon_px", muon_px)
 tree.Branch("muon_py", muon_py)
@@ -82,6 +90,10 @@ for i_event in range(nevents):
             muon_pz.clear()
             muon_e.clear()
             
+            jpsi_dx.clear()
+            jpsi_dy.clear()
+            jpsi_dz.clear()
+            
             if is_prompt(pythia.event, i)==1:
                 is_prompt_jpsi.push_back(1)
                 n_prompt = n_prompt + 1
@@ -89,8 +101,14 @@ for i_event in range(nevents):
                 is_prompt_jpsi.push_back(0)
                 n_non_prompt = n_non_prompt + 1
             
+            
             daughter1 = pythia.event[i].daughter1()
             daughter2 = pythia.event[i].daughter2()
+            
+            jpsi_dx.push_back(pythia.event[daughter1].xProd())
+            jpsi_dy.push_back(pythia.event[daughter1].yProd())
+            jpsi_dz.push_back(pythia.event[daughter1].zProd())
+            
 
             # Assuming the two daughters are the muons
             muon_px.push_back(pythia.event[daughter1].px())
